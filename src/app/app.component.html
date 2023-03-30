@@ -1,0 +1,21 @@
+{{ role }}
+<h1>Hello this is sandesh</h1>
+<!-- <div [ngSwitch]="role">
+  <div *ngSwitchCase="'user'">Welcome user !!!</div>
+  <div *ngSwitchCase="'admin'">Hello admin!!!</div>
+  <div *ngSwitchDefault>You are not authorizet to access this content!!!</div>
+</div> -->
+
+<app-container>
+  <app-employee></app-employee>
+  <app-rooms></app-rooms>
+  <h2>Hello this is from the ng-content component</h2>
+</app-container>
+<!-- <div>
+  <ng-template #user></ng-template>
+</div> -->
+
+<div #name></div>
+<div>
+  {{ role }}
+</div>
