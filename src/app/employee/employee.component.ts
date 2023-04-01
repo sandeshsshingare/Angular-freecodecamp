@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
 })
 export class EmployeeComponent {
 
-  empname : string = "Aniket";
+  empname : string = "Sandesh Shingare";
 }

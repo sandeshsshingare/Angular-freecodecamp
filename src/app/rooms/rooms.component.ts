@@ -1,3 +1,4 @@
+import { HttpEventType } from '@angular/common/http';
 import {
   AfterViewInit,
   Component,
@@ -7,6 +8,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { catchError, map, Observable, Subject, Subscription } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
 import { Room, RoomsList } from './rooms';
 import { RoomsService } from './service/rooms.service';
@@ -35,11 +37,69 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit {
   };
   roomsList: RoomsList[] = [];
 
+  stream = new Observable((observer) => {
+    observer.next('user1');
+    observer.next('user2');
+    observer.next('user3');
+    observer.complete();
+    // observer.error('error');
+  });
+  totalBytes = 0;
+  subscription!: Subscription;
+  error$ = new Subject<string>();
+
+  getError$ = this.error$.asObservable();
+
+  rooms$ = this.roomService.getRooms$.pipe(
+    catchError((err) => {
+      this.error$.next(err.message);
+      console.log(err);
+      return [];
+    })
+  );
+
+  roomsCount$ = this.roomService.getRooms$.pipe(map((rooms) => rooms.length));
+
+  ngOnInit(): void {
+    this.roomService.getPhotos().subscribe((event) => {
+      switch (event.type) {
+        case HttpEventType.Sent: {
+          console.log('Request has been made!!');
+          break;
+        }
+        case HttpEventType.ResponseHeader: {
+          console.log('Request Success!!');
+          break;
+        }
+        case HttpEventType.DownloadProgress: {
+          this.totalBytes += event.loaded;
+          break;
+        }
+        case HttpEventType.Response: {
+          console.log(event.body);
+        }
+      }
+
+      console.log(event);
+    });
+    this.stream.subscribe({
+      next: (value) => console.log(value),
+      complete: () => console.log('complete'),
+      error: (err) => console.log(err),
+    });
+    this.stream.subscribe((data) => console.log(data));
+    // this.roomService.getRooms$.subscribe((rooms) => {
+    //   this.roomsList = rooms;
+    //   console.log(this.roomService.gettitle());
+    // }
+    // );
+    // console.log(this.roomService.gettitle());
+  }
   title: string = '';
 
   constructor(private roomService: RoomsService) {
-    console.log(this.roomService.getroom());
-    this.roomsList = this.roomService.getroom();
+    // console.log(this.roomService.getroom());
+    // console.log(this.roomService.getroom());
     console.log(this.roomsList);
   }
   ngAfterViewInit() {
@@ -51,12 +111,6 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit {
   }
   ngDoCheck(): void {
     console.log('do check is called');
-  }
-  ngOnInit(): void {
-    // this.roomService.getroom().subscribe((rooms) => {
-    // this.roomsList = rooms;
-    // console.log(this.roomService.gettitle());
-    // console.log(this.roomService.gettitle());
   }
 
   // console.log(this.headerComponent);
@@ -74,19 +128,50 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
   addRoom() {
-    const addroom1: RoomsList = {
+    const room: RoomsList = {
       roomNumber: '4',
       roomType: 'Fresh',
       amenities: 'Air Conditioner with Washing Machine',
-      price: 4567,
+      price: 11111,
       photos: 'hello photos',
       checkInTime: new Date('12/nov/2023'),
       checkOutTime: new Date('11/Dec/2022'),
       rating: 5,
     };
     // this.roomsList.push(addroom);
+    this.roomService.addRoom(room).subscribe((data) => {
+      this.roomsList = data;
+    });
     console.log(this.roomsList);
 
-    this.roomsList = [...this.roomsList, addroom1];
+    // this.roomsList = [...this.roomsList, addroom1];
   }
+
+  editRoom() {
+    const room: RoomsList = {
+      roomNumber: '1',
+      roomType: 'Fresh',
+      amenities: 'Air Conditioner with Washing Machine',
+      price: 444555,
+      photos: 'hello photos',
+      checkInTime: new Date('12/nov/2023'),
+      checkOutTime: new Date('11/Dec/2022'),
+      rating: 4.5,
+    };
+    this.roomService.editRoom(room).subscribe((data) => {
+      this.roomsList = data;
+    });
+  }
+
+  deleteRoom() {
+    this.roomService.delete('3').subscribe((data) => {
+      this.roomsList = data;
+    });
+  }
+
+  // ngOnDestroy() {
+  //   if (this.subscription) {
+  //     this.subscription.unsubscribe();
+  //   }
+  // }
 }

@@ -1,8 +1,8 @@
 <!-- <h1>Welcome to {{ hotelname }}</h1> -->
 <app-header></app-header>
-<app-header></app-header>
-<app-header></app-header>
+<!-- {{ rooms$ | async | json }} -->
 {{ title }}
+<h1>Number of Rooms available {{ roomsCount$ |async }}</h1>
 <div [hidden]="flag">
   <p [ngStyle]="{ backgroundColor: flag ? 'green' : 'red' }">Number of rooms</p>
   <div [innerText]="numberOfRooms"></div>
@@ -14,6 +14,21 @@
 >
   Toggle button
 </button>
+<button
+  (click)="editRoom()"
+  class="btn btn-outline-success"
+  [ngStyle]="{ color: flag ? 'blue' : 'black' }"
+>
+  Edit room
+</button>
+
+<button
+  (click)="deleteRoom()"
+  class="btn btn-outline-success"
+  [ngStyle]="{ color: flag ? 'blue' : 'black' }"
+>
+  Delete Room
+</button>
 <!-- {{ roomsList | json }} -->
 <!-- <p [innerText]="flag"></p> -->
 {{ roomsint.availableRooms ? " Rooms available" : " no rooms available" }}
@@ -21,16 +36,20 @@
 <div *ngIf="selectedRooms">
   {{ selectedRooms | json }}
 </div>
-<app-rooms-list
-  [rooms]="roomsList"
-  (selectedRooms)="selectRooms($event)"
-  [title]="title"
-  [getrating]="roomsList[0].rating"
-  *ngIf="flag"
-></app-rooms-list>
+<h1>{{ getError$ | async }}</h1>
+<div *ngIf="rooms$ | async as rooms">
+  <app-rooms-list
+    [rooms]="rooms"
+    (selectedRooms)="selectRooms($event)"
+    [title]="title"
+  ></app-rooms-list>
+</div>
+
 <!-- <div>
   {{ roomsList | json }}
 </div> -->
 <div>
   <button (click)="addRoom()">Add room</button>
 </div>
+
+<h1>{{ totalBytes }} loaded</h1>

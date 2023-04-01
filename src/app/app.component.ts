@@ -3,6 +3,8 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Inject,
+  inject,
   OnInit,
   Optional,
   ViewChild,
@@ -10,6 +12,8 @@ import {
 } from '@angular/core';
 import { LoggerService } from './logger.service';
 import { RoomsComponent } from './rooms/rooms.component';
+import { localStorageToken } from './localstorage.token';
+import { InitService } from './init.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,12 +23,17 @@ import { RoomsComponent } from './rooms/rooms.component';
 export class AppComponent implements AfterViewInit, OnInit {
   constructor(
     @Optional() private loggerservice: LoggerService,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject(localStorageToken) private localstorage: Storage,
+    private initService: InitService
   ) {
     this.getData();
+    console.log(initService.config);
   }
+
   ngOnInit(): void {
     this.loggerservice?.log('AppComponent.ngOnInit()');
+    this.localstorage.setItem('name', 'Hilton Hotel Local storage');
     // throw new Error('Method not implemented.');
   }
   @ViewChild('user', { read: ViewContainerRef }) vcr!: ViewContainerRef;

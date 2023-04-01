@@ -24,7 +24,7 @@ export class RoomsListComponent implements OnChanges, OnDestroy {
       this.title = changes['title'].currentValue.toUpperCase();
     }
   }
-  @Input() rooms: RoomsList[] = [];
+  @Input() rooms: RoomsList[] | null = [];
 
   @Input() title = '';
 

@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Inject, inject, Injectable } from '@angular/core';
 import { AppConfig } from '../../AppConfig/appconfig.interface';
 import { APP_SERVICE_CONFIG } from '../../AppConfig/appconfig.service';
-import { RoomsList } from '../rooms';
-// import { environment } from '../../../environments/environment';
+import { Room, RoomsList } from '../rooms';
+import { environment } from '../../../environments/environment';
+import { shareReplay } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -13,49 +14,42 @@ export class RoomsService {
     private http: HttpClient
   ) {
     // console.log(environment.apiEndpoint);
-    console.log('Api endpoint');
+    // console.log('Api endpoint', environment.apiEndpoint);
 
     console.log(this.config.apiEndpoint);
   }
-  roomList: RoomsList[] = [
-    {
-      roomNumber: '1',
-      roomType: 'Fresh1',
-      amenities: 'Air Conditioner with Washing Machine',
-      price: 4567,
-      photos: 'hello photos',
-      checkInTime: new Date('12/nov/2023'),
-      checkOutTime: new Date('11/Dec/2022'),
-      rating: 5,
-    },
-    {
-      roomNumber: '2',
-      roomType: 'Fres2',
-      amenities: 'Air Conditioner with Washing Machine',
-      price: 4567,
-      photos: 'hello photos',
-      checkInTime: new Date('12/nov/2023'),
-      checkOutTime: new Date('11/Dec/2022'),
-      rating: 5,
-    },
-    {
-      roomNumber: '3',
-      roomType: 'Fres3',
-      amenities: 'Air Conditioner with Washing Machine',
-      price: 4567,
-      photos: 'hello photos',
-      checkInTime: new Date('12/nov/2023'),
-      checkOutTime: new Date('11/Dec/2022'),
-      rating: 5,
-    },
-  ];
+  roomsList: RoomsList[] = [];
+  // headers = new HttpHeaders({ token: '122343454dkjkfg' });
+  getRooms$ = this.http.get<RoomsList[]>('/api/rooms').pipe(shareReplay(1));
+
   title = 'hello sandesh this is service example';
   gettitle() {
     return this.title;
   }
   getroom() {
-    console.log('hello');
+    // console.log('hello');
+    console.log(this.http.get<RoomsList[]>('/api/rooms'));
 
-    return this.roomList;
+    return this.http.get<RoomsList[]>('/api/rooms');
+  }
+
+  addRoom(room: RoomsList) {
+    return this.http.post<RoomsList[]>('/api/rooms', room);
+  }
+  editRoom(room: RoomsList) {
+    return this.http.put<RoomsList[]>(`/api/rooms/${room.roomNumber}`, room);
+  }
+  delete(id: string) {
+    return this.http.delete<RoomsList[]>(`/api/rooms/${id}`);
+  }
+  getPhotos() {
+    const request = new HttpRequest(
+      'GET',
+      `https://jsonplaceholder.typicode.com/photos`,
+      {
+        reportProgress: true,
+      }
+    );
+    return this.http.request(request);
   }
 }
