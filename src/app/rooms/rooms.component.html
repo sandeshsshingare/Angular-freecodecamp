@@ -1,13 +1,13 @@
 <!-- <h1>Welcome to {{ hotelname }}</h1> -->
-<app-header></app-header>
-<!-- {{ rooms$ | async | json }} -->
+<!-- <app-header></app-header> -->
+<!-- {{ rooms$ | async | json }}
 {{ title }}
-<h1>Number of Rooms available {{ roomsCount$ | async }}</h1>
+<h1>Number of Rooms available {{ roomsCount$ | async }}</h1> -->
 <router-outlet></router-outlet>
 <div>
-  <button [routerLink]="'add'">Add room</button>
+  <button class="btn btn-success" [routerLink]="'add'">Add room</button>
 </div>
-
+<!-- 
 <div [hidden]="flag">
   <p [ngStyle]="{ backgroundColor: flag ? 'green' : 'red' }">Number of rooms</p>
   <div [innerText]="numberOfRooms"></div>
@@ -33,18 +33,30 @@
   [ngStyle]="{ color: flag ? 'blue' : 'black' }"
 >
   Delete Room
-</button>
+</button> -->
 <!-- {{ roomsList | json }} -->
 <!-- <p [innerText]="flag"></p> -->
-{{ roomsint.availableRooms ? " Rooms available" : " no rooms available" }}
-<div *ngIf="roomsint?.availableRooms">Rooms Available</div>
-<div *ngIf="selectedRooms">
+<!-- {{ roomsint.availableRooms ? " Rooms available" : " no rooms available" }} -->
+<!-- <div *ngIf="roomsint?.availableRooms">Rooms Available</div> -->
+<!-- <div *ngIf="selectedRooms">
   {{ selectedRooms | json }}
+</div> -->
+<!-- <h1>{{ getError$ | async }}</h1> -->
+{{ priceFilter | json }}
+<div>
+  <input
+    type="number"
+    class="form-control"
+    placeholder="price"
+    [formControl]="priceFilter"
+  />
 </div>
-<h1>{{ getError$ | async }}</h1>
+
 <div *ngIf="rooms$ | async as rooms">
   <app-rooms-list
     [rooms]="rooms"
+    [price]="priceFilter.value"
+    [title]="title"
     (selectedRooms)="selectRooms($event)"
     [title]="title"
   ></app-rooms-list>
@@ -54,4 +66,4 @@
   {{ roomsList | json }}
 </div> -->
 
-<h1>{{ totalBytes }} loaded</h1>
+<!-- <h1>{{ totalBytes }} loaded</h1> -->

@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,6 +22,9 @@ import { LoginComponent } from './rooms/login/login.component';
 import { HoverDirective } from './hover.directive';
 import { EmailvalidatorDirective } from './emailvalidator/emailvalidator.directive';
 import { HeaderModule } from './header/header.module';
+import { RouteConfigToken } from './services/routeConfig.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { GlobalErrorHandler } from './errorhandler.service';
 // import { RoomsModule } from './rooms/rooms.module';
 function initFactory(initService: InitService) {
   return () => initService.init();
@@ -54,12 +57,17 @@ function initFactory(initService: InitService) {
     MatListModule,
     FormsModule,
     HeaderModule,
+    MatSnackBarModule,
   ],
-  providers: [ 
+  providers: [
     {
       provide: APP_SERVICE_CONFIG,
 
       useValue: APP_CONFIG,
+    },
+    {
+      provide: RouteConfigToken,
+      useValue: { title: 'Home' },
     },
     {
       provide: HTTP_INTERCEPTORS,
@@ -73,6 +81,7 @@ function initFactory(initService: InitService) {
       deps: [InitService],
       multi: true,
     },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ],
   bootstrap: [AppComponent],
 })

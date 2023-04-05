@@ -12,6 +12,8 @@ import { catchError, map, Observable, Subject, Subscription } from 'rxjs';
 import { HeaderComponent } from '../header/header.component';
 import { Room, RoomsList } from './rooms';
 import { RoomsService } from './service/rooms.service';
+import { ConfigService } from '../services/config.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-rooms',
@@ -60,6 +62,8 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit {
 
   roomsCount$ = this.roomService.getRooms$.pipe(map((rooms) => rooms.length));
 
+  priceFilter = new FormControl(0);
+
   ngOnInit(): void {
     this.roomService.getPhotos().subscribe((event) => {
       switch (event.type) {
@@ -97,7 +101,10 @@ export class RoomsComponent implements OnInit, DoCheck, AfterViewInit {
   }
   title: string = '';
 
-  constructor(private roomService: RoomsService) {
+  constructor(
+    private roomService: RoomsService,
+    private configService: ConfigService
+  ) {
     // console.log(this.roomService.getroom());
     // console.log(this.roomService.getroom());
     console.log(this.roomsList);

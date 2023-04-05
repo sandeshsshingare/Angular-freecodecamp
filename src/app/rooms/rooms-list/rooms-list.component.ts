@@ -14,7 +14,7 @@ import { RoomsList } from '../rooms';
   selector: 'app-rooms-list',
   templateUrl: './rooms-list.component.html',
   styleUrls: ['./rooms-list.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomsListComponent implements OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
@@ -24,9 +24,12 @@ export class RoomsListComponent implements OnChanges, OnDestroy {
       this.title = changes['title'].currentValue.toUpperCase();
     }
   }
-  @Input() rooms: RoomsList[] | null = [];
+  @Input()
+  rooms!: RoomsList[] | [];
 
   @Input() title = '';
+
+  @Input() price:any = 0;
 
   @Input() getrating = 0;
 
